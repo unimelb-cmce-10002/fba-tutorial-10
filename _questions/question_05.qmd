@@ -1,12 +1,59 @@
-<!-- question-type: prepare -->
-### Exercise 5: Title
+<!-- question-type: inclass -->
+### Exercise 5: Measuring Funnel Completion
 
-This is the text for the question, with its accompanying code 
+Now that we've linked event-level data with the experimental information, let's create our first outcome measure — **funnel completion**.
+
+Each client goes through a series of process steps (for example, `start`, `step_1`, `step_2`, `confirm`).  
+A funnel *completion* occurs if the client reaches the final step, `"confirm"`.
+
+**(a)** Compute a client-level indicator for whether each client completed the funnel by completing the code below.
 
 ```{r}
-# Example code for the question
-1 + 1
+#| eval: false
+completion_by_visitor <- 
+    YOUR_CODE |>
+    group_by(YOUR_CODE) |>
+    YOUR_CODE(
+        completed = any(YOUR_CODE == "confirm"),
+        .groups = "drop"
+    )
+
 ```
+
+**(b)** Summarise completion rates by treatment.
+
+```{r}
+#| eval: false
+completion_summary <- 
+    YOUR_CODE |>
+    YOUR_CODE |>
+    summarise(
+        completes = YOUR_CODE,
+        total     = YOUR_CODE,
+        pct       = completes / total * 100,
+        .groups   = "drop"
+    )
+
+```
+
+**(c)** Create a simple visual to compare completion rates across the two variations. Use a bar chart to display the percentage of users who completed the funnel.
+
+```{r}
+#| eval: false
+completion_summary |> 
+    YOUR_CODE +
+    YOUR_CODE +
+    geom_text(aes(label = round(pct, 1)), vjust = -0.5) +
+    labs(
+        title = "Funnel Completion Rate by Variation",
+        x = "Variation",
+        y = "Completion Rate (%)"
+    ) +
+    theme_minimal() +
+    theme(legend.position = "none")
+```
+
+**(d)** Interpret your findings. By how many percentage points did the change in sign up process influence completions?
 
 <!-- BEGIN PROFILE:r-teaching-guide -->
 ::: {.content-visible when-profile="r-teaching-guide"}
@@ -19,23 +66,46 @@ Teaching Note
 
 ::: {.teaching-block-body}
 
-🎯 **Learning Objective** 
-Students should:
+🎯 **Learning Objective**  
+Students should:  
+- Learn how to summarise event-level data into client-level outcomes.  
+- Understand how to calculate and interpret funnel completion rates across experimental groups.  
+- Recognize the importance of clear visual and numerical comparisons when communicating results.  
+- Begin linking descriptive differences to the logic of causal effects (without formal inference yet).
 
-- XXXXX
+✅ **Core Concepts to Highlight**
 
-✅   **Core Concepts to Highlight**
+- **Aggregation and granularity:**  
+  Explain how summarising event-level actions to the client level captures whether each user “succeeded” in completing the funnel.
 
-List them here
+- **Outcome definition:**  
+  The choice of “completion” as the outcome connects directly to the business question: *Did the new sign-up flow help more users finish?*
 
+- **Descriptive comparison:**  
+  Computing and plotting completion rates is the first step toward evaluating impact — but these are still *descriptive statistics*, not causal claims.
 
-💬 **Suggested In-Class Prompts** (if needed)
+- **Percentage vs. percentage points:**  
+  A difference between 65.6 % and 69.3 % is **3.7 percentage points**, not “3.7 % improvement.”  
+  Reinforce this distinction — it’s critical for clean business communication.
 
-List as needed
+- **Visualization for stakeholders:**  
+  A simple bar chart makes the result accessible to non-technical audiences and aligns with how analytics teams typically communicate A/B test results.
+
+💬 **Suggested In-Class Prompts**
+
+- “Why do we calculate this at the *client* level instead of the *event* level?”  
+- “If we see a 3.7 percentage-point difference, is that large or small in this context?”  
+- “How might we explain this result to a product manager in one sentence?”  
+- “What are some reasons the Test group might outperform the Control beyond the design change itself?”  
 
 📌 **Common Misunderstandings**
 
-List as needed
+- Confusing *percentage points* (absolute difference) with *percent change* (relative difference).  
+- Forgetting that descriptive differences alone don’t confirm causality.  
+- Assuming visualizations replace numerical summaries rather than complement them.  
+- Interpreting the `any()` function incorrectly (thinking it counts events instead of checking existence).  
+- Ignoring potential data issues such as missing or duplicated user IDs when summarising.
+
 
 :::
 
@@ -55,11 +125,72 @@ Solution
 
 ::: {.solution-block-body}
 
-Here’s the explanation and code:
+**(a)** Compute a client-level indicator for whether each client completed the funnel.
 
 ```{r}
-print("Hello, world!")
+completion_by_visitor <- 
+    weblog_clean |>
+    group_by(variation, client_id) |>
+    summarise(
+        completed = any(process_step == "confirm"),
+        .groups = "drop"
+    )
 ```
+
+The `any(process_step == "confirm")` condition checks whether a client ever reached the "confirm" step.
+
+The grouping ensures this is calculated per client and per variation. The latter simply keeps the treatment allocation attached to the summary data
+
+The resulting dataset has one row per client, indicating whether they completed (TRUE) or not (FALSE).
+
+**(b)** Summarise completion rates by treatment.
+
+```{r}
+completion_summary <- 
+    completion_by_visitor |>
+    group_by(variation) |>
+    summarise(
+        completes = sum(completed),
+        total     = n(),
+        pct       = completes / total * 100,
+        .groups   = "drop"
+    )
+```
+
+`sum(completed)` counts how many clients completed the funnel.
+
+`n()` counts how many total clients were in that variation.
+
+Dividing gives a percentage completion rate (pct) for each variation.
+
+This summary table provides the key comparison for the experiment.
+
+**(c)** 
+```{r}
+completion_summary |> 
+    ggplot(aes(x = variation, y = pct, fill = variation)) +
+    geom_col() +
+    geom_text(aes(label = round(pct, 1)), vjust = -0.5) +
+    labs(
+        title = "Funnel Completion Rate by Variation",
+        x = "Variation",
+        y = "Completion Rate (%)"
+    ) +
+    theme_minimal() +
+    theme(legend.position = "none")
+```
+
+The plot visually compares completion rates across variations.
+
+Bars make it easy to see which variation performs better and by how much.
+
+Adding text labels helps decision-makers read exact percentages directly from the chart.
+
+**(d) ** Interpretation
+
+The difference in completion rates (in percentage points) represents the estimated effect of the new sign-up flow.
+
+Control = 65.6 and Test = 69.3%, then the Test version increased completions by 3.7 percentage points.
 :::
 
 :::

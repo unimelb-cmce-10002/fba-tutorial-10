@@ -1,8 +1,8 @@
 project:
   render:
     - tutorial.qmd
-title: 'Teaching Guide: R version'
+title: 'Teaching Guide: Causal Analytics & Improving User Sign Up Experiences'
 format:
   html:
-    output-file: "tutorial-r-teaching-guide"
+    output-file: "tutorial-10-teaching-guide"
     output-ext:  "html"

@@ -1,12 +1,15 @@
 <!-- question-type: prepare -->
-### Exercise 2: Title
+### Exercise 2: Why Do We Test?
 
-This is the text for the question, with its accompanying code 
+Before analysing the data, take a moment to think about *why* companies design controlled experiments in the first place.
 
-```{r}
-# Example code for the question
-1 + 1
-```
+The fintech company could have simply launched the new sign-up process for everyone and watched how overall sign-ups changed.
+Instead, they decided to run an **A/B test**, randomly assigning users to the **Control** (old process) or **Test** (new process) version.
+
+(a) Why is it risky to compare completion rates before and after the new sign-up process without a test?  
+
+(b) How does random assignment in an A/B test help us make a fair comparison?
+
 
 <!-- BEGIN PROFILE:r-teaching-guide -->
 ::: {.content-visible when-profile="r-teaching-guide"}
@@ -18,24 +21,41 @@ Teaching Note
 :::
 
 ::: {.teaching-block-body}
+### 🧩 Teaching Guide — Exercise 2: Why Do We Test
 
-🎯 **Learning Objective** 
-Students should:
+🎯 **Learning Objective**  
+Students should:  
+- Understand why before/after comparisons can be misleading in business analytics.  
+- Explain how random assignment helps create fair comparisons between groups.  
+- Recognize that A/B testing provides a way to isolate the impact of a change while holding other factors constant.
 
-- XXXXX
+✅ **Core Concepts to Highlight**
 
-✅   **Core Concepts to Highlight**
+- **Observational vs. experimental comparison:**  
+  Observing outcomes before and after a change captures both the effect of the change *and* any other factors that vary over time.
 
-List them here
+- **Confounding factors:**  
+  External influences such as marketing campaigns, seasonality, or shifts in user composition can mimic or mask the true effect.
 
+- **Purpose of random assignment:**  
+  Randomization ensures that, on average, both groups are similar in everything except the change being tested.
 
-💬 **Suggested In-Class Prompts** (if needed)
+- **Correct Group comparison logic:**  
+  Differences in outcomes between randomized groups can be interpreted as the causal effect of the new process.
 
-List as needed
+💬 **Suggested In-Class Prompts**
+
+- “What could make sign-up rates rise even if the new process didn’t help?”  
+- “How does random assignment protect us from these external influences?”  
+- “Why do we say experiments make groups comparable *on average* rather than exactly?”
 
 📌 **Common Misunderstandings**
 
-List as needed
+- Assuming that a change in outcomes automatically means the change caused it.  
+- Believing randomization guarantees identical groups rather than similarity in expectation.  
+- Forgetting that timing, seasonality, or marketing activity can drive apparent improvements.  
+- Confusing correlation (two things moving together) with causation (one thing driving the other).
+
 
 :::
 
@@ -54,12 +74,14 @@ Solution
 :::
 
 ::: {.solution-block-body}
+#### (a)
+- Comparing before and after can be misleading because other factors might change at the same time (seasonality, marketing campaigns, economic conditions, or user mix).  
+- Any observed improvement might reflect timing or external influences rather than the new process itself.
 
-Here’s the explanation and code:
+#### (b)
+- Random assignment balances both known and unknown factors between the Control and Test groups.  
+- Because the groups are comparable at the start, any systematic difference in outcomes can be attributed to the new process rather than to pre-existing differences.
 
-```{r}
-print("Hello, world!")
-```
 :::
 
 :::

@@ -1,8 +1,8 @@
 project:
   render:
     - tutorial.qmd
-title: 'Solutions document: R version'
+title: 'Solutions document: Causal Analytics & Improving User Sign Up Experiences'
 format:
   html:
-    output-file: "tutorial-r-solutions"
+    output-file: "tutorial-10-solutions"
     output-ext:  "html"

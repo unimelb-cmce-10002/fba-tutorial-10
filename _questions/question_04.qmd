@@ -1,12 +1,46 @@
-<!-- question-type: prepare -->
-### Exercise 4: Title
+<!-- question-type: inclass -->
+### Exercise 4: Working with Web Log Data
 
-This is the text for the question, with its accompanying code 
+Now that you’ve checked that users were randomly assigned to the Test and Control groups, it's time to examine what they actually did inside the experiment.  
+In this step, you’ll work with **event-level data** — information about each time a user interacted with the sign-up process.
+
+**(a)** Load and inspect the web log data. The data are split across two files.  Run the code below to combine them into one dataset.
 
 ```{r}
-# Example code for the question
-1 + 1
+#| eval: false
+weblogs_files <- 
+    c('data/ab_test_web_data_pt_1.txt',
+      'data/ab_test_web_data_pt_2.txt')
+
+weblog <- 
+    weblogs_files |> 
+    map_df(read_csv)
+
+glimpse(YOURCODE)
 ```
+
+**(b)** Explain the structure of the data. What kind of information does each row represent?
+
+**(c)** A common problem when working with event log data is duplicate rows, where the same information is recorded multiple times. Clean the data to remove duplicate rows by completing the code below:
+
+```{r}
+#| eval: false
+weblog_clean <- 
+    weblog |> 
+    YOURCODE
+```
+
+**(d)** Merge the cleaned web log data with the dataset that contains information on which clients are assigned to each treatment. Drop any observations that are not assigned to either "Test" or "Control".
+
+```{r}
+#| eval: false
+weblog_clean <- 
+    weblog_clean |> 
+    YOUR_CODE |> 
+    YOUR_CODE
+```
+
+
 
 <!-- BEGIN PROFILE:r-teaching-guide -->
 ::: {.content-visible when-profile="r-teaching-guide"}
@@ -18,24 +52,50 @@ Teaching Note
 :::
 
 ::: {.teaching-block-body}
+🎯 **Learning Objective**  
 
-🎯 **Learning Objective** 
-Students should:
+Students should:  
 
-- XXXXX
+- Understand the structure and purpose of event-level (web log) data.  
+- Learn how to combine and clean multiple files representing behavioural events.  
+- Recognize why deduplication and correct joins are essential for experimental integrity.  
+- Connect data-processing choices (e.g., join type) to causal reasoning about experimental outcomes.
 
-✅   **Core Concepts to Highlight**
+✅ **Core Concepts to Highlight**
 
-List them here
+- **Event-level vs. user-level data:**  
+  Each row represents an action in time, not a person. This introduces sequence, timing, and frequency — enabling behavioural analysis (e.g., funnel progression).
 
+- **Combining multiple data sources:**  
+  Large-scale behavioural data are often split into multiple files for storage or collection reasons.  
+  Using `map_df()` generalizes to real-world pipelines where analysts need to stitch data together.
 
-💬 **Suggested In-Class Prompts** (if needed)
+- **Duplicates and data integrity:**  
+  Duplicate events inflate counts and distort metrics like completion rates or average steps.  
+  Always verify and clean before aggregation.
 
-List as needed
+- **Merging datasets with experimental info:**  
+  Joining web logs to treatment data connects user behaviour to variation assignment.  
+  Discuss `inner_join()` vs `left_join()`:
+  - `inner_join()` keeps only matched records — ensuring analysis is limited to valid experiment participants.  
+  - `left_join()` would keep all log entries, including unmatched ones, which might include noise or test accounts.
+
+💬 **Suggested In-Class Prompts**
+
+- “Why might we prefer to analyse event-level data instead of only final outcomes?”  
+- “What could happen if duplicate events weren’t removed?”  
+- “What are the trade-offs between `inner_join()` and `left_join()` here?”  
+- “If a large share of users disappears after joining, what would that tell you about data quality?”  
+- “How does this step prepare us for measuring completion or other behaviour”
 
 📌 **Common Misunderstandings**
 
-List as needed
+- Treating event data as if each row were a unique user.  
+- Assuming all duplicates are errors without understanding possible system-level causes.  
+- Thinking join type doesn’t matter — it changes which users are included in the analysis.  
+- Forgetting to check for missing variation labels before computing treatment effects.
+- Believing that cleaning steps are purely technical rather than part of ensuring valid inference.
+
 
 :::
 
@@ -55,11 +115,60 @@ Solution
 
 ::: {.solution-block-body}
 
-Here’s the explanation and code:
+**(a)** 
+```{r}
+# this process is new to students, explain it intuitively
+# they dont have to be able to reproduce
+# map_df() reads both files and combines them into a single tibble.
+weblogs_files <- 
+    c('data/ab_test_web_data_pt_1.txt',
+      'data/ab_test_web_data_pt_2.txt')
+
+weblog <- 
+    weblogs_files |> 
+    map_df(read_csv)
+
+glimpse(weblog)
+```
+
+**(b)** 
+
+Each row corresponds to a single user event.
+
+Key variables include:
+
+- client_id: the unique identifier for the user
+- visit_id: session identifier
+- process_step: which stage of the funnel the event represents
+- date_time: timestamp of the action
+
+Unlike demographic data, this dataset captures behaviour over time, not static attributes.
+
+**(c)** 
+```{r}
+weblog_clean <- 
+    weblog |> 
+    distinct()
+
+```
+
+`distinct()` drops any exact duplicate rows — ensuring that the same event isn’t counted twice.
+
+Duplicates can arise from data-collection glitches, double logging, or users refreshing pages.
+
+Cleaning them prevents over-counting when later computing events per user or funnel completion rates.
+
+**(d)**
 
 ```{r}
-print("Hello, world!")
+weblog_clean <- 
+    weblog_clean |> 
+    inner_join(treatment, join_by(client_id)) |> 
+    drop_na(variation)
+
 ```
+
+
 :::
 
 :::

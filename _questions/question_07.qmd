@@ -1,12 +1,48 @@
 <!-- question-type: inclass -->
-### Exercise 7: Title
+### Exercise 7: Communicating Experimental Insights
 
-This is the text for the question, with its accompanying code 
+Now we need to translate your analytical results into a short executive brief written for a business audience.
 
-```{r}
-# Example code for the question
-1 + 1
-```
+Your goal is to communicate *what was tested*, *what happened*, and *what the company should do next* — clearly and persuasively, without technical detail.
+
+::: {.callout-warning}
+### Instructions
+
+**Length:** 400 words.  
+**Exhibit:** 1 table **or** figure.  
+
+Write this as an **executive brief** to be read and understood by managers.
+
+- Bullets must be written as **full sentences**.  
+- Use the writing principles from *Write Like an Amazonian* — short, declarative sentences; clarity before style.  
+- **No visible code** in the brief.  
+- Do **not** produce new analysis, tables, or figures in this section — use the results already created in Exercises 5–6.  
+:::
+
+INSERT YOUR FIGURE OR TABLE HERE  
+*(For example: your completion-rate comparison chart or summary table from Exercise 5.)*
+
+### Executive Summary
+
+3–4 sentences summarising the research question, key findings, and why they matter for the company.  
+*Hint:* State the business problem, the intervention, and the observed difference in completion rates.
+
+### Key Insights
+
+- Up to **3 bullets** describing what the data and analysis show.  
+- Focus on evidence — e.g., “Completion rates were 3.7 percentage points higher in the Test group.”  
+- Avoid statistical jargon; use plain, business‐relevant language.
+
+### Business Implications
+
+- Up to **3 bullets** on why these findings matter for the organisation.  
+- Connect the analytics result back to strategic goals.
+
+### Recommended Actions
+
+- Up to **3 bullets** outlining clear, actionable next steps.  
+- Recommendations should be specific, realistic, and aligned with business priorities.
+
 
 <!-- BEGIN PROFILE:r-teaching-guide -->
 ::: {.content-visible when-profile="r-teaching-guide"}
@@ -19,23 +55,46 @@ Teaching Note
 
 ::: {.teaching-block-body}
 
-🎯 **Learning Objective** 
+🎯 **Learning Objective**
+
 Students should:
 
-- XXXXX
+- Synthesise analytic findings into a concise, business-facing narrative.  
+- Translate statistical results into actionable insights for non-technical stakeholders.  
+- Distinguish between *facts*, *insights*, and *implications*.  
+- Practise structured executive communication (summary → insight → implication → action).
 
-✅   **Core Concepts to Highlight**
+✅ **Core Concepts to Highlight**
 
-List them here
+- **Data-to-decision storytelling:** Executives want to know what happened, why it matters, and what to do — not how it was coded.  
+- **Evidence phrased in business terms:** Replace analytical detail (e.g., “effect size of 0.08 SD”) with performance language (e.g., “a measurable lift in customer conversion”).  
+- **Structure matters:**  
+  - *Executive Summary* = the key message in 3–4 sentences.  
+  - *Key Insights* = what the data reveal (specific, declarative).  
+  - *Business Implications* = why it matters strategically.  
+  - *Recommended Actions* = what should happen next.  
+- **Tone:** Confident, factual, and audience-aware. Write as if the VP of Product will skim it between meetings.  
+- **One exhibit only:** Encourage visual economy — one figure or table that reinforces the story.
 
+💬 **Suggested In-Class Prompts**
 
-💬 **Suggested In-Class Prompts** (if needed)
-
-List as needed
+- “What separates a *data fact* from a *business insight*?”  
+- “How could you phrase this same result so that a non-analyst understands why it matters?”  
+- “If you were the VP of Product, which single line here would convince you to act?”  
+- “What verbs sound decisive and executive? (‘increased,’ ‘reduced,’ ‘enabled,’ ‘drove’).”  
+- “How might you reword a technical statement like ‘0.08 SD difference’ into something a manager actually remembers?”
 
 📌 **Common Misunderstandings**
 
-List as needed
+- **Listing results instead of interpreting them.**  
+  Students often repeat metrics rather than explaining what they *mean* for the business.  
+- **Overusing technical terms.**  
+  Phrases like “significant at p < 0.05” or “standard deviation units” should be translated into plain English.  
+- **Neglecting implications.**  
+  A good brief doesn’t stop at “what happened” — it ends with “so what?” and “what next?”.  
+- **Forgetting scale.**  
+  Remind students that small effects can have big business value; connect percentage points to customer counts or revenue potential.  
+
 
 :::
 
@@ -54,12 +113,39 @@ Solution
 :::
 
 ::: {.solution-block-body}
+(Not the unique correct answer)
+### Example Executive Brief — Funnel Completion A/B Test
 
-Here’s the explanation and code:
+INSERT YOUR FIGURE OR TABLE HERE  
+*(Example: Bar chart showing 65.6 % vs 69.3 % completion rates.)*
 
-```{r}
-print("Hello, world!")
-```
+### Executive Summary (5 pts)
+
+The company tested a new sign-up flow for existing users who needed to activate access to the new personalised-insights dashboard.
+Random assignment split users between the **Control** (old flow) and **Test** (new flow).
+The new flow increased completion rates from **65.6 % to 69.3 %**, a **3.7 percentage-point** or **5.6 %** relative improvement. 
+This increase represents a meaningful uplift at scale and validates the design changes introduced.
+
+### Key Insights (5 pts)
+
+- The **new sign-up flow increased completion rates by 3.7 percentage points**, moving nearly 6 % more users through the funnel.  
+- The effect is **consistent with high-performing digital experiments** — modest in size but highly impactful across large user base.  
+- Incremental UX improvements can deliver measurable gains in customer conversion, underscoring the ROI of ongoing experimentation.
+
+### Business Implications
+
+- A smoother sign-up experience helps more customers access premium features sooner, improving perceived value and engagement.  
+- Higher completion reduces churn risk among existing users who might otherwise abandon the process.  
+- Demonstrates that small UX improvements can deliver measurable performance gains in high-volume digital channels.
+
+
+### Recommended Actions
+
+- **Roll out** the new sign-up process to all users, prioritising markets with similar user profiles.  
+- **Monitor** long-term engagement and retention metrics to confirm sustained impact beyond initial sign-up.  
+- (Maybe) **Design a follow-up test** to identify which interface changes (layout, copy, or step order) drove the largest improvement.
+
+
 :::
 
 :::
