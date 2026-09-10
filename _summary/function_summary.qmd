@@ -1,0 +1,223 @@
+## Key R functions used in this notebook
+
+This page collects every new R function you used in this tutorial, in one place, as a quick-reference glossary. Each function below follows the same format:
+
+- **Package:** where the function comes from. Most functions you'll meet early on are **Base R** (built into R, no setup needed). Others live in packages that must be loaded first with `library()`.
+- **What it does:** a plain-English explanation, no jargon.
+- **Why you'd use it:** the everyday analyst reason you'd reach for it.
+- **Arguments:** the inputs you put inside the parentheses `()` to tell the function exactly what to work on. Some are required, some are optional. Arguments listed here are not necessarily exhaustive.
+- **Example:** the function used on this tutorial's own objects, such as `demogs`, `weblog_clean`, and `completion_summary`.
+
+For more information on any function, use ?`function_name` in the R console (e.g. `?read_csv`) to see the official documentation, which includes a full list of arguments, descriptions, and often many examples.
+
+### `distinct()`
+
+**Package:** dplyr
+
+**What it does:** Returns the unique values of a column, or removes exact duplicate rows if no column is specified.
+
+**Why you'd use it:** To check what categories a variable actually contains, or to make sure the same observation isn't counted more than once.
+
+**Arguments:**
+
+- `...` — *(optional)* the column(s) you want to check for unique values (e.g. `variation`). If left blank, `distinct()` removes duplicate rows using every column instead.
+
+**Example:**
+
+```{r}
+#| eval: false
+# See the unique values that the treatment variable takes
+demogs |>
+    distinct(variation)
+```
+
+### `st()`
+
+**Package:** vtable
+
+**What it does:** Builds a summary table of a data frame's variables, optionally split by group.
+
+**Why you'd use it:** To check whether two groups (e.g. Control and Test) look similar on average across their characteristics, before comparing outcomes between them.
+
+**Arguments:**
+
+- `group` — the column that splits the summary table into separate groups, in quotation marks (here, `'variation'`, to compare Control against Test).
+
+**Example:**
+
+```{r}
+#| eval: false
+# Compare demographic characteristics across the Control and Test groups
+demogs |>
+    select(-client_id) |>
+    st(group = 'variation')
+```
+
+### `map_df()`
+
+**Package:** purrr
+
+**What it does:** Applies the same function to every element of a vector or list, then stacks all the results into one data frame.
+
+**Why you'd use it:** When your data is split across several files, `map_df()` reads each file and combines them into a single dataset, without you having to repeat the same code for every file.
+
+**Arguments:**
+
+- `.x` — the vector or list to loop over (here, `weblogs_files`).
+- `.f` — the function to apply to each element (here, `read_csv`).
+
+**Example:**
+
+```{r}
+#| eval: false
+# Read both web log files and stack them into one data frame
+weblog <-
+    weblogs_files |>
+    map_df(read_csv)
+```
+
+### `geom_col()`
+
+**Package:** ggplot2
+
+**What it does:** Draws one bar per row of data, with the bar's height set by a y-value you've already calculated.
+
+**Why you'd use it:** To build a bar chart from a summary table, such as completion rate by variation.
+
+**Arguments:**
+
+- no arguments are used in this tutorial. `geom_col()` draws its bars straight from the `x` and `y` columns set in `aes()`.
+
+**Example:**
+
+```{r}
+#| eval: false
+completion_summary |>
+    ggplot(aes(x = variation, y = pct, fill = variation)) +
+    geom_col()
+```
+
+### `geom_text()`
+
+**Package:** ggplot2
+
+**What it does:** Adds text labels to a chart, positioned according to your data.
+
+**Why you'd use it:** To print the exact value on top of each bar, so readers don't have to estimate it from the chart alone.
+
+**Arguments:**
+
+- `aes(label = ...)` — which value to display as text (here, `round(pct, 1)`).
+- `vjust` — *(optional)* nudges the label up or down (here, `-0.5` moves it slightly above the bar).
+
+**Example:**
+
+```{r}
+#| eval: false
+geom_text(aes(label = round(pct, 1)), vjust = -0.5)
+```
+
+### `lag()`
+
+**Package:** dplyr
+
+**What it does:** Shifts a column's values down by one row, so each row can be compared with the row before it.
+
+**Why you'd use it:** To compare the Test row's completion rate to the Control row's completion rate, once the rows have been sorted.
+
+**Arguments:**
+
+- `x` — the column to shift (here, `pct`).
+
+**Example:**
+
+```{r}
+#| eval: false
+pct - lag(pct)
+```
+
+### `last()`
+
+**Package:** dplyr
+
+**What it does:** Returns the last value in a column.
+
+**Why you'd use it:** To pull out the final row's value after a calculation, for example the Test row's difference, once Control and Test have been sorted and compared.
+
+**Arguments:**
+
+- `x` — the column to take the last value from (here, `diff_pct_points`).
+
+**Example:**
+
+```{r}
+#| eval: false
+completion_diff <-
+    completion_summary |>
+    arrange(variation) |>
+    mutate(diff_pct_points = pct - lag(pct)) |>
+    summarise(diff_pct_points = last(diff_pct_points))
+```
+
+### `pull()`
+
+**Package:** dplyr
+
+**What it does:** Extracts a single column from a data frame as a plain vector, instead of keeping a whole data frame.
+
+**Why you'd use it:** When you need just one number or column to use in a further calculation, rather than a data frame containing it.
+
+**Arguments:**
+
+- `var` — the column to extract (here, `diff_pct_points`).
+
+**Example:**
+
+```{r}
+#| eval: false
+diff_rate <-
+    completion_diff |>
+    pull(diff_pct_points) / 100
+```
+
+### `sd()`
+
+**Package:** Base R
+
+**What it does:** Calculates the standard deviation of a set of numbers, a measure of how spread out they are.
+
+**Why you'd use it:** To express the size of a treatment effect relative to the natural variation in the data, rather than as a raw number on its own.
+
+**Arguments:**
+
+- `x` — the numeric column to calculate the standard deviation of (here, `completed`).
+
+**Example:**
+
+```{r}
+#| eval: false
+control_sd <-
+    completion_by_visitor |>
+    filter(variation == "Control") |>
+    summarise(sd_rate = sd(completed)) |>
+    pull(sd_rate)
+```
+
+### `print()`
+
+**Package:** Base R
+
+**What it does:** Displays an R object's value in the console.
+
+**Why you'd use it:** To show the result of a calculation, especially at the end of a script where R might not print it automatically.
+
+**Arguments:**
+
+- `x` — the object you want to display (here, `diff_sd_units`).
+
+**Example:**
+
+```{r}
+#| eval: false
+print(diff_sd_units)
+```
